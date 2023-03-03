@@ -1,5 +1,6 @@
 import {forwardRef, useState} from 'react';
 import {data as emojiList} from "./data";
+import EmojiButton from './EmojiButton';
 import EmojiSearch from './EmojiSearch';
 
 export function EmojiPicker (props, inputRef){
@@ -28,7 +29,7 @@ export function EmojiPicker (props, inputRef){
 
     }
 
-    function EmojiPickerContainer(){
+    /*function EmojiPickerContainer(){
         return(
 
             <div>
@@ -43,8 +44,20 @@ export function EmojiPicker (props, inputRef){
         )
             
         
-    }
+    }*/
 
+    function handleOnClickEmoji(emoji){
+        const cursorPosition= inputRef.current.selectionStart;
+        const text = inputRef.current.value;
+        const prev = text.slice(0, cursorPosition);
+        const next = text.slice(cursorPosition);
+
+        inputRef.current.value = prev + emoji.symbol + next;
+        inputRef.current.selectionStart = cursorPosition + emoji.symbol.length;
+        inputRef.current.selectionEnd =  cursorPosition + emoji.sybol.length;
+        inputRef.current.focus();
+
+    }
     return(
         <div>
             <button onClick={handleClickOpen}> Boton Emoji
@@ -54,7 +67,9 @@ export function EmojiPicker (props, inputRef){
                 <div>
                 <EmojiSearch onSearch={handleSearch} />
                         <div> 
-                        {emojis.map((emoji) => (<div key={emoji.symbol}> {emoji.symbol}</div>
+                            
+                        {emojis.map((emoji) => (
+                         <EmojiButton  key={emoji.symbol} emoji={emoji} onClick={handleOnClickEmoji} />
 
                             ))
                         }
