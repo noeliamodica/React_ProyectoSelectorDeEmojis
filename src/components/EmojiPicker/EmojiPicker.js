@@ -1,4 +1,4 @@
-import {forwardRef, useState} from 'react';
+import {forwardRef, useRef, useState, useEffect} from 'react';
 import {data as emojiList} from "./data";
 import EmojiButton from './EmojiButton';
 import EmojiSearch from './EmojiSearch';
@@ -6,7 +6,24 @@ import EmojiSearch from './EmojiSearch';
 export function EmojiPicker (props, inputRef){
 
     const [isOpen, setIsOpen]= useState(false);
-    const [emojis,setEmojis] = useState(emojiList);
+    const [emojis,setEmojis] = useState([...emojiList]);
+
+    const containerRef = useRef(null);
+
+    //se ejecutara cuando iniciamos la aplicacion, si damos click a un elemento padre a nuestra capa de emojis ejecutamos cierto codigo
+    //
+    useEffect(()=>{
+        window.addEventListener('click', e =>{
+            if (!containerRef.current.contains(e.target)){
+                //si es un elemento padre que cierre el buscador, es decir el componente de emojis
+                setIsOpen(false);
+                // y resetee los emojis
+                setEmojis(emojiList);
+            }
+        })
+    }, []
+    );
+
     
 
     function handleClickOpen(){
@@ -59,12 +76,12 @@ export function EmojiPicker (props, inputRef){
 
     }
     return(
-        <div>
+        <div ref={containerRef}>
             <button onClick={handleClickOpen}> Boton Emoji
 
             </button>
             {isOpen ? ( 
-                <div>
+                <div  >
                 <EmojiSearch onSearch={handleSearch} />
                         <div> 
                             
